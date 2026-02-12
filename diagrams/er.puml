@@ -1,0 +1,50 @@
+@startuml
+
+
+entity Agency {
+  agencyID: GUID <color:blue><b>pk
+  --
+  displayName: varchar(32)
+}
+
+entity Title {
+  titleID: GUID <color:blue><b>pk
+  --
+  partID: GUID  <color:green><b> fk
+  agencyID: GUID  <color:green><b> fk
+  --
+  latestAmendedOn: date
+  latestIssueDate: date
+  upToDateAsOf: date
+}
+
+entity Part {
+  partID: GUID <color:blue><b>pk
+  --
+  agencyID: GUID:  <color:green><b> fk
+  --
+  partName: varchar(32)
+  partType: PartTypes
+  type: varchar(32)
+  title: varchar(32)
+  identifier: varchar(32)
+  name: varchar(32)
+  amendedData: date
+  issueDate: date
+  substantive: boolean
+  removed: boolean
+  subPart: boolean
+}
+
+enum PartTypes {
+   * chapter
+   * section
+   * appendix
+}
+
+
+Title::agencyID  " *" o- "1" Agency::agencyID : "many\ntitles\n per agency      "
+Part::partID "<b>1..*" *-l "  1" Title::partID : "many parts per title"
+Agency::agencyID "<b>1" *- "<b>*" Part::agencyID : "Many parts\n per agency     "
+Part::partType "1" - "1" PartTypes : "                        "
+@enduml
