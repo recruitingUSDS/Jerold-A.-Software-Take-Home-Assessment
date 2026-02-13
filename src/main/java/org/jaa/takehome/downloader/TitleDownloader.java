@@ -19,17 +19,10 @@ import static org.jaa.takehome.Constants.*;
 /**
  * Downloader that uses the eCFR v1 public REST API to fetch every part of Title 1.
   * Features:
-  *   Discovers Title 1's internal {@code titleId} automatically.
- *   Iterates over paginated /titles/{titleId}/parts endpoint.
- *   Downloads each part's full JSON representation.
- *   Honors the API's rate‑limit headers (default 60 req/min).
- *   Saves files under {@code output/Title-1/part‑{partNumber}.json}.
-  * Before running, double‑check the eCFR API Terms of Use and be courteous
- * with request frequency.
-  * @author OpenAI ChatGPT
  */
 public class TitleDownloader {
 
+    /* some redundant constants can be refactored out in the future */
     /** Base URL of the eCFR v1 API (no trailing slash). */
     public static final String API_BASE = "https://www.ecfr.gov/api/versioner/v1/";
 
@@ -54,6 +47,9 @@ public class TitleDownloader {
     /** Minimum sleep (ms) when we have to wait for the rate‑limit reset. */
     private static final long MIN_SLEEP_MS = 1_000L;
 
+    /**
+     * constructor
+     */
     public TitleDownloader() {
         this.httpClient = HttpClient.newBuilder()
                 .followRedirects(HttpClient.Redirect.NORMAL)
@@ -62,6 +58,12 @@ public class TitleDownloader {
                 .build();
     }
 
+    /**
+     * saves CSV of all titles and details
+     * @param allTitles list of titles
+     * @throws IOException unlikely file i/o exceptions
+     * @throws InterruptedException very unlikely, usually pressing 'CTRL-C'
+     */
 
     public void saveAllTitles(List<TitleDescriptor> allTitles) throws IOException, InterruptedException {
         File output = OUTPUT_ROOT.toFile();
@@ -87,6 +89,12 @@ public class TitleDownloader {
 
     }
 
+    /**
+     * Retrieve full XML for a whole title (very large, and not terribly useful)
+     * @param title provided title
+     * @throws IOException if there are issues at the end-points, this can happen
+     * @throws InterruptedException unlikely
+     */
     public void retrieveAndSaveTitleXml(TitleDescriptor title) throws IOException, InterruptedException {
         File output = OUTPUT_ROOT.toFile();
         File partDetailsDirectory = new File(output, "title-" + title.number);
@@ -111,6 +119,13 @@ public class TitleDownloader {
         //try {Thread.sleep(Constants.REQUEST_DELAY_MS);} catch (InterruptedException e) { /**/ }
     }
 
+
+    /**
+     * Gets a full list of all the titles
+     * @return list of titles
+     * @throws IOException unlikely
+     * @throws InterruptedException unlikely
+     */
     public  List<TitleDescriptor> getAllTitlesFromEndpoint()  throws IOException, InterruptedException {
         List<TitleDescriptor> allTitles = new ArrayList<>();
         String url = API_BASE + "/titles.json";
@@ -139,6 +154,13 @@ public class TitleDownloader {
         return allTitles;
     }
 
+    /**
+     * Downloads full XML for a title, these can be quite large.
+     * @param title title
+     * @return very large XML string
+     * @throws IOException unlikely
+     * @throws InterruptedException unlikely
+     */
     protected String getFullTitleXml(TitleDescriptor title) throws IOException, InterruptedException {
         // https://www.ecfr.gov/api/versioner/v1/full/2022-12-29/title-2.xml"
         ; // latestAmendedOn, number
@@ -155,9 +177,13 @@ public class TitleDownloader {
     }
 
 
-    /* --------------------------------------------------------------------- */
-    /*   Helper: perform a GET request with proper headers & rate‑limit handling */
-    /* --------------------------------------------------------------------- */
+    /**
+     * Helper: perform a GET request with proper headers & rate‑limit handling
+     * @param url URL of rest endpoint
+     * @return  full response
+     * @throws IOException unlikely
+     * @throws InterruptedException unlikely
+     */
     private HttpResponse<String> sendGet(String url) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))

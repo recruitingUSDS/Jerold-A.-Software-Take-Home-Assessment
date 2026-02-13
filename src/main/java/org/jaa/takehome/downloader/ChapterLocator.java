@@ -23,15 +23,22 @@ import java.util.concurrent.TimeUnit;
 
 import static org.jaa.takehome.Constants.*;
 
+/**
+ * No guarantee that a chapter referenced by an agency actually exists.
+ * this class uses the hierarchy endpoint for confirmation.
+ */
 public class ChapterLocator {
 
     /* --------------------------------------------------------------- */
-    /*                     ★★  CONFIGURATION  ★★                      */
+    /*                     ★★  CONFIGURATION  ★★                       */
     /* --------------------------------------------------------------- */
     /** Jackson ObjectMapper – used for JSON <-> POJO conversion. */
     private final ObjectMapper mapper = new ObjectMapper();
     private final HttpClient httpClient;
 
+    /**
+     * constructor
+     */
     public ChapterLocator() {
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(20))
@@ -39,6 +46,15 @@ public class ChapterLocator {
                 .build();
     }
 
+    /**
+     * if the chapter exists, return a ChapterDescriptor, otherwise null
+     * @param titleDescriptor title descriptor for rest endpoint
+     * @param agencyDescriptor if the chapter exists, all required cross-references added for title and agency
+     * @param chapter string representation of chapter name
+     * @return instance of ChapterDescriptor if found, otherwise null
+     * @throws IOException unlikely, probably tcp/ip issue or rest endpoint issue.
+     * @throws InterruptedException unlikely
+     */
     public ChapterDescriptor findChapter(TitleDescriptor titleDescriptor, AgencyDescriptor agencyDescriptor, String chapter) throws IOException, InterruptedException {
         ChapterDescriptor chapterDescriptor = null;
         String date = titleDescriptor.getLatestIssueDate();

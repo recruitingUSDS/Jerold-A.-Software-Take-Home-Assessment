@@ -3,7 +3,12 @@ package org.jaa.takehome;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Constant values for endpoints
+ */
 public class Constants {
+
+    // base rest endpoint
     public static final String API_BASE_URL = "https://www.ecfr.gov/api";
 
     /** Where the XML files will be written. */
@@ -14,16 +19,17 @@ public class Constants {
     public static final String ENDPOINT_AGENCIES = "/admin/v1/agencies.json";
     public static final String ENDPOINT_TITLES   = "/versioner/v1/titles";
 
-    /** End‑point to fetch parts for a given title. */
+    /** End‑point to fetch parts, XML, and ancestry. */
     public static final String ENDPOINT_PARTS = API_BASE_URL +  "/versioner/v1/full";
     public static final String ENDPOINT_XML_PART =  "/versioner/v1/full";
-
     public static final String ENDPOINT_ANCESTRY_PARTS = API_BASE_URL +  "/versioner/v1/ancestry";
 
     /** End‑point to fetch the **full XML** for a single part. */
     public static final String ENDPOINT_PART_DOCUMENT = "title-{title}.json";
 
+    // for pretty printing output file name
     public static Path currentWorkingDirectoryPath;
+
     /** Milliseconds to pause between successive calls (50 ms = 20 req/s). */
     public static final long REQUEST_DELAY_MS = 50L;
 

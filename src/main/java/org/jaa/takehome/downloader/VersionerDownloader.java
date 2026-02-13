@@ -17,15 +17,6 @@ import static org.jaa.takehome.Constants.*;
 
 /**
  * Downloader for the **current** eCFR “Versioner”
- * What it does:
- *   GET /titles → list of all titles.
- *   For each title, GET /titles/{title}/parts → list of parts.
- *   For each part, GET /titles/{title}/parts/{part} → full XML document.
- *   Writes each XML file to {@code output/Title-XX/part-YY.xml}.
- * If the API ever requires a bearer token, set {@code API_KEY}.  The
- * client already respects the public 5 req/s rate‑limit by sleeping
- * {@code REQUEST_DELAY_MS} between calls.
- * @author OpenAI ChatGPT
  */
 public class VersionerDownloader {
 
@@ -36,6 +27,9 @@ public class VersionerDownloader {
     private final ObjectMapper mapper = new ObjectMapper();
     private final HttpClient httpClient;
 
+    /**
+     * constructor
+     */
     public VersionerDownloader() {
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(20))
@@ -48,7 +42,13 @@ public class VersionerDownloader {
 
 
     /* --------------------------------------------------------------- */
-    /** Download every part that belongs to the supplied title. */
+
+    /** Download every part that belongs to the supplied title.
+     * Generates CSV file for full cross referencing to parts/titles.
+     * @param title
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public void crossReferenceAllPartsForTitle(TitleDescriptor title) throws IOException, InterruptedException {
         String titleNum = title.number;
         File output = OUTPUT_ROOT.toFile();
@@ -88,8 +88,13 @@ public class VersionerDownloader {
     }
 
 
-
-    /** GET List of parts for supplied title */
+    /** GET List of parts for supplied title
+     * Retrieves full list of parts for provided title
+     * @param titleDescriptor retrieved from other calls
+     * @return list of parts for given title
+     * @throws IOException either http or file i/o errors
+     * @throws InterruptedException unlikely
+     */
     public List<PartDescriptor> fetchPartsForTitle(TitleDescriptor titleDescriptor) throws IOException, InterruptedException {
         String titleNumber = titleDescriptor.getNumber();
         List<PartDescriptor> parts = new ArrayList<>();

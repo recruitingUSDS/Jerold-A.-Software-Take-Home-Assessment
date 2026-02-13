@@ -3,6 +3,9 @@ package org.jaa.takehome.descriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * full definition of a title
+ */
 public class TitleDescriptor {
     public String number;              // e.g. "1"
     public String name;                // e.g. "General Provisions"
@@ -12,6 +15,15 @@ public class TitleDescriptor {
     private boolean reserved;
     private List<PartDescriptor> parts = new ArrayList<>();
 
+    /**
+     * constructor
+     * @param number
+     * @param name
+     * @param latestAmendedOn
+     * @param latestIssueDate
+     * @param upToDateAsOf
+     * @param reserved
+     */
     public TitleDescriptor(String number,
                            String name,
                            String latestAmendedOn,
@@ -27,6 +39,7 @@ public class TitleDescriptor {
         this.reserved = reserved;
     }
 
+    // gettors and setters
     public String getNumber() {return number;}
     public void setNumber(String number) {this.number = number;}
     public String getName() {return name;}

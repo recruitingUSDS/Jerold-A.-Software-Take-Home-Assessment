@@ -10,9 +10,12 @@ import org.jaa.takehome.downloader.VersionerDownloader;
 import java.nio.file.Paths;
 import java.util.List;
 
+/**
+ * driver to download all required data
+ */
 public class Main {
     /* --------------------------------------------------------------------- */
-    /*                     ENTRY POINT (main)                               */
+    /*                     ENTRY POINT (main)                                */
     /* --------------------------------------------------------------------- */
     public static void main(String[] args) {
 

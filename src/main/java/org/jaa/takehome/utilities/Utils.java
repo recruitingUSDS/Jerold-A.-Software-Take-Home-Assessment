@@ -9,9 +9,20 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Locale;
 
+/**
+ * convenience methods
+ */
 public class Utils {
 
     private static final ObjectMapper mapper = new ObjectMapper();
+
+    /**
+     * pretty print errors and any possible JSON response
+     * @param request
+     * @param resp
+     * @param message
+     * @throws IOException
+     */
     public static void reportError(HttpRequest request, HttpResponse<String> resp, String message)  throws IOException {
         System.out.println("\033[31m" + message + "\033[0m" + ": " + "Response Code: " + resp.statusCode()  + "\n" + request.toString() + "\n\t=> " + request);
         try {
@@ -22,6 +33,14 @@ public class Utils {
         }
 
     }
+
+    /**
+     * fata errors
+     * @param request
+     * @param resp
+     * @param message
+     * @throws IOException
+     */
     public static void ensureSuccess(HttpRequest request, HttpResponse<String> resp, String message)  throws IOException {
         if (resp.statusCode() != 200) {
             throw new IOException(message + ": " + request.toString() + ": " + resp.statusCode() + " => " + request.method() + " " + request.uri());

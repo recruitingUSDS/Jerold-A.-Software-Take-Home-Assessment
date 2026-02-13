@@ -21,6 +21,15 @@ public  class AgencyDescriptor {
     private final List<ChapterDescriptor> agencyChapters = new ArrayList<>();
     private final Path agencyOutputPath;
 
+    /**
+     * constructor
+     * @param name
+     * @param shortName
+     * @param displayName
+     * @param sortableName
+     * @param slug
+     * @param agencyOutputPath
+     */
     public AgencyDescriptor(String name, String shortName, String displayName, String sortableName, String slug, Path agencyOutputPath) {
         this.name = name;
         this.shortName = shortName;
@@ -30,6 +39,7 @@ public  class AgencyDescriptor {
         this.agencyOutputPath = agencyOutputPath;
     }
 
+    // Settors and gettors
     public Path getAgencyOutputPath() {return agencyOutputPath;}
     public String getName() {return name; }
     public String getShortName() {return shortName;}

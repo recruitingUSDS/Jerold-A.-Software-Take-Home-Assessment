@@ -4,6 +4,10 @@ package org.jaa.takehome.descriptor;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /** POJO for a part – matches the JSON objects returned by /titles/{title}/parts. */
+
+/**
+ * Assignment doesn't require part cross-references, but here is the definition
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PartDescriptor {
     private String type;
@@ -18,6 +22,20 @@ public class PartDescriptor {
     private boolean subPart;
     private String agency;       // may be null if the API does not echo it
 
+    /**
+     * constructor
+     * @param type
+     * @param partNumber
+     * @param titleDescriptor
+     * @param name
+     * @param identifier
+     * @param amendedDate
+     * @param issueDate
+     * @param substantive
+     * @param removed
+     * @param subPart
+     * @param agency
+     */
     public PartDescriptor(String type, String partNumber, TitleDescriptor titleDescriptor,
                           String name, String identifier,
                           String amendedDate, String issueDate,
@@ -35,6 +53,7 @@ public class PartDescriptor {
         this.agency = agency;
     }
 
+    // setters and gettors
     public String getType() {return type;}
     public void setType(String type) {this.type = type;}
 

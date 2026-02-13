@@ -203,8 +203,14 @@ public class AgencyDownloader {
     }
 
 
-
-    /** GET /titles/{title}/parts/{part} → raw XML for a single part. */
+    /**
+     * Fetch XML just for the referenced chapter and title
+     * @param titleDetails limits xml retrieval just for specific title
+     * @param chapterDescriptor limits xml retrieval to just provided chapter
+     * @return xml returned as String
+     * @throws IOException can happen due to rate limiting or other network issues
+     * @throws InterruptedException unlikely
+     */
     private String fetchPartXml(TitleDescriptor titleDetails, ChapterDescriptor chapterDescriptor)
             throws IOException, InterruptedException {
         String date = titleDetails.getLatestAmendedOn();
@@ -241,8 +247,12 @@ public class AgencyDownloader {
         return resp.body();   // raw XML
     }
 
-    /* --------------------------------------------------------------- */
-    /** Helper that adds the optional Authorization header and the Accept header. */
+    /**
+     *  Helper that adds the optional Authorization header and the Accept header.
+     * @param url end point
+     * @param acceptHeader will be XML
+     * @return
+     */
     private HttpRequest buildRequest(String url, String acceptHeader) {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -259,6 +269,13 @@ public class AgencyDownloader {
     }
 
     /** Write the XML payload to a file named “part‑<number>.xml”. */
+    /**
+     * write output to file named 'chapter-xx.xml' in the correct directory
+     * for agency and title.
+     * @param titleDir title directory
+     * @param chapterNumber chapter number
+     * @param xml text to write to file
+     */
     private void savePartXml(Path titleDir, String chapterNumber, String xml) {
         String safeChapter = chapterNumber.replaceAll("[^0-9A-Za-z]", "_");
         Path outFile = titleDir.resolve("chapter-" + safeChapter + ".xml");
