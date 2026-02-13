@@ -22,14 +22,15 @@ public class Main {
         final VersionerDownloader versionerDownloader;
         final AgencyDownloader agencyDownloader;
         final List<AgencyDescriptor> allAgencies;
-        try
-        {
+        try {
             System.out.println("--------------------------------------------------------------------------------");
 
             /* Get all titles and all details and store in fs/db*/
             titleDownloader = new TitleDownloader();
             List<TitleDescriptor> allTitles = titleDownloader.getAllTitlesFromEndpoint();
-            titleDownloader.saveAllTitles(allTitles);
+            if (allTitles != null && !allTitles.isEmpty()) {
+                titleDownloader.saveAllTitles(allTitles);
+            }
 
             versionerDownloader = new VersionerDownloader();
             for (TitleDescriptor title : allTitles) {
@@ -38,7 +39,6 @@ public class Main {
                     title.setParts(partDescriptors);
                 }
                 versionerDownloader.crossReferenceAllPartsForTitle(title);
-
             }
             System.out.println("--------------------------------------------------------------------------------");
             /* get All agencies and store in fs/db */
@@ -49,10 +49,8 @@ public class Main {
             System.out.println("--------------------------------------------------------------------------------");
             System.out.println("Downloading and saving all title XML files");
             for (TitleDescriptor title : allTitles) {
-                System.out.printf("\015\033[KTitle Number %s '%s' ... ", title.getNumber(), title.getName());
                 titleDownloader.retrieveAndSaveTitleXml(title);
             }
-
             System.out.println("--------------------------------------------------------------------------------");
 
 

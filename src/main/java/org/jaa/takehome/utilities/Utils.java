@@ -18,7 +18,7 @@ public class Utils {
             JsonNode root = mapper.readTree(resp.body());
             System.out.println(root.toPrettyString());
         } catch (JsonProcessingException e) {
-            System.out.printf("Error Reported, invalid JSON reply: '%s'\n", resp.body());
+            System.out.printf("Error Reported, invalid JSON reply:\n\033[31m%s\033[0m\n", resp.body());
         }
 
     }

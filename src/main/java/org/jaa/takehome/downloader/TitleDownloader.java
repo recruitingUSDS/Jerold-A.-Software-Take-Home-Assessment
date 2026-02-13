@@ -92,9 +92,21 @@ public class TitleDownloader {
         File partDetailsDirectory = new File(output, "title-" + title.number);
         partDetailsDirectory.mkdirs();
         File partDetailsFile = new File(partDetailsDirectory, "title-" + title.getNumber() + ".xml");
-        System.out.printf(" => Writing to '%s' ... ", partDetailsFile.getAbsolutePath());
+        System.out.printf("\015\033[KTitle (\033[35m%s\033[0m; \033[36m%s\033[0m) ",
+                          title.getNumber(), title.getName());
+        System.out.printf(" => Writing to: \033[31m%s\033[0m ... ",
+                          partDetailsFile.getAbsolutePath());
         String xml = getFullTitleXml(title);
-        Files.write(partDetailsFile.toPath(), xml.getBytes());
+        if (xml != null && !xml.isEmpty()) {
+            double kb = xml.length() / 1024.0;
+            System.out.printf("Size is \033[35m%.2f\033[0m KB", kb);
+            Files.write(partDetailsFile.toPath(), xml.getBytes());
+            System.out.printf("\015\033[KTitle (\033[32m%s\033[0m; \033[33m%s\033[0m) saved to \033[32m%s\033[0m [size \033[35m%.2f\033[0m KB]\n",
+                              title.getNumber(),
+                              title.getName(),
+                              partDetailsFile.getAbsolutePath(),
+                              kb);
+        }
         //System.out.printf("Pausing for %d milliseconds ...", Constants.REQUEST_DELAY_MS);
         //try {Thread.sleep(Constants.REQUEST_DELAY_MS);} catch (InterruptedException e) { /**/ }
     }
@@ -103,6 +115,7 @@ public class TitleDownloader {
         List<TitleDescriptor> allTitles = new ArrayList<>();
         String url = API_BASE + "/titles.json";
         HttpResponse<String> resp = sendGet(url);
+        if (resp == null) return null;
         // The response body is a JSON object with a "titles" array.
         try {
             JsonNode root = mapper.readTree(resp.body());
@@ -129,12 +142,16 @@ public class TitleDownloader {
     protected String getFullTitleXml(TitleDescriptor title) throws IOException, InterruptedException {
         // https://www.ecfr.gov/api/versioner/v1/full/2022-12-29/title-2.xml"
         ; // latestAmendedOn, number
-        String url = String.format("%s/%s/title-%s.xml",
+        if (title.getLatestAmendedOn() != null && !title.getLatestAmendedOn().isEmpty()) {
+            String url = String.format("%s/%s/title-%s.xml",
                                        ENDPOINT_PARTS,
                                        title.latestAmendedOn,
                                        title.number);
-        HttpResponse<String> resp = sendGet(url);
-        return resp.body();
+            HttpResponse<String> resp = sendGet(url);
+            if (resp == null) return null;
+            return resp.body();
+        }
+        return null;
     }
 
 
@@ -150,7 +167,11 @@ public class TitleDownloader {
 
         HttpResponse<String> response = httpClient.send(request,
                                                 HttpResponse.BodyHandlers.ofString());
-        Utils.ensureSuccess(request, response, "Error getting titles from endpoint '" + url);
+        if (response.statusCode() != 200) {
+            System.out.println();
+            Utils.reportError(request, response, "Error getting titles from endpoint '" + url);
+            return null;
+        }
 
 
         // ---- Rate‑limit handling -------------------------------------------------
