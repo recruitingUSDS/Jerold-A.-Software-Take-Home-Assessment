@@ -1,0 +1,327 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 MesloLGMNerdFontCompleteM-Regular;\f1\fnil\fcharset0 MesloLGMNerdFontCompleteM-Bold;\f2\fnil\fcharset0 MesloLGMNerdFontCompleteM-Bold-Italic;
+}
+{\colortbl;\red255\green255\blue255;\red167\green0\blue255;\red14\green15\blue17;\red0\green0\blue0;
+\red0\green41\blue53;\red255\green255\blue255;\red0\green99\blue188;\red129\green0\blue255;\red188\green255\blue39;
+\red0\green116\blue215;\red0\green41\blue54;\red13\green40\blue58;\red213\green213\blue213;\red120\green129\blue140;
+\red51\green31\blue255;\red255\green255\blue95;\red76\green63\blue255;\red197\green197\blue197;\red255\green50\blue71;
+\red36\green36\blue36;\red0\green161\blue255;\red70\green70\blue70;\red0\green168\blue68;\red0\green120\blue117;
+\red186\green186\blue186;\red206\green207\blue154;\red166\green108\blue212;\red220\green109\blue69;\red234\green234\blue234;
+\red0\green255\blue151;\red255\green102\blue112;\red116\green112\blue213;}
+{\*\expandedcolortbl;;\cspthree\c66667\c26667\c100000;\cspthree\c6419\c7034\c8486;\cspthree\c0\c0\c0;
+\cspthree\c0\c20784\c26275;\cspthree\c100000\c100000\c100000;\cspthree\c0\c46667\c76078;\cspthree\c53333\c0\c100000;\cspthree\c82353\c100000\c36863;
+\cspthree\c0\c52941\c84706;\cspthree\c0\c20784\c26667;\cspthree\c9804\c20784\c28627;\cspthree\c86667\c86667\c86667;\cspthree\c55158\c57926\c61569;
+\cspthree\c26667\c26667\c100000;\cspthree\c100000\c100000\c52941;\cspthree\c37255\c37255\c100000;\cspthree\c81569\c81569\c81569;\cspthree\c100000\c37255\c37255;
+\cspthree\c18824\c18824\c18824;\cspthree\c0\c68627\c100000;\cspthree\c34510\c34510\c34510;\cspthree\c0\c68627\c37255;\cspthree\c0\c52941\c52941;
+\cspthree\c77647\c77647\c77647;\cspthree\c84314\c84314\c68627;\cspthree\c68627\c52941\c84314;\cspthree\c84314\c52941\c37255;\cspthree\c93333\c93333\c93333;
+\cspthree\c37255\c100000\c68627;\cspthree\c100000\c52941\c52941;\cspthree\c52941\c52941\c84314;}
+{\*\background {\shp{\*\shpinst\shpleft0\shptop0\shpright0\shpbottom0\shpfhdr0\shpbxmargin\shpbymargin\shpwr0\shpwrk0\shpfblwtxt1\shpz0\shplid1025{\sp{\sn shapeType}{\sv 1}}{\sp{\sn fFlipH}{\sv 0}}{\sp{\sn fFlipV}{\sv 0}}{\sp{\sn fillColor}{\sv 1117966}}{\sp{\sn fFilled}{\sv 1}}{\sp{\sn lineWidth}{\sv 0}}{\sp{\sn fLine}{\sv 0}}{\sp{\sn bWMode}{\sv 9}}{\sp{\sn fBackground}{\sv 1}}}}}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs28 \cf2 \cb3 \ulnone \uc0\u57526 \cf4 \cb2 CONDA: base \cf5 \uc0\u57526 \cf6 \cb5 \uc0\u61817  \cf7 \uc0\u57526 \cf6 \cb7  \uc0\u61728  bash \cf7 \cb8 \uc0\u57520 \cf9  jerry@[macbook10:tsc:macbook10wifi:Prl] \cf8 \cb10 \uc0\u57520 \cf11  \uc0\u58879  ~/../Jerold-A.-Software-Take-Home-Assessment \cf10 \cb9 \uc0\u57520 \cf12  \uc0\u57504 dbms \cf9 \cb13 \uc0\u57520 \cf4  \uc0\u61452  \cf13 \cb3 \uc0\u57520 \cf14 \
+
+\f1\b \cf15 $
+\f0\b0 \cf14  glow  README.md\
+\
+  
+\f1\b \cf16 \cb17  Take Home Assignment for USDS
+\f0\b0 \cf14 \cb3 \
+\
+  \cf18 \'95 Jerold Abramson\cf14 \
+  \cf18 \'95 \cf19 \cb20  jerry@jabramson.com\cf14 \cb3 \
+  \cf18 \'95 \cf19 \cb20  jerrythea@gmail.com\cf14 \cb3 \
+\
+  
+\f1\b \cf16 \cb17  First Challenge
+\f0\b0 \cf14 \cb3 \
+\
+  \cf18 The first challenge with this assigment was understanding the domain\cf14 \
+  \cf18 in which this massive amount of data resided in.\cf14 \
+\
+  \cf18 The initial impetus was to go straight to the AI and write the code to\cf14 \
+  \cf18 utiize the \cf19 \cb20  REST APIs \cf18 \cb3  to download the data.\cf14 \
+\
+  \cf18 This was a flawed approach for a variety of reasons:\cf14 \
+\
+  \cf18 \'95 The LLM did not have current APIs available, and kept generating\cf14 \
+  \cf18 code against non-existent end-points.\cf14 \
+  \cf18 \'95 With prompting, I was able to get the AI to understand the\cf14 \
+  \cf18 end-points, but the AI didn't have the required intelligence to really\cf14 \
+  \cf18 understand the structure and layout of the CCR.\cf14 \
+\
+  
+\f1\b \cf16 \cb17  Incremental implementation
+\f0\b0 \cf14 \cb3 \
+\
+  \cf18 Since the data set is so huge, and my understanding thereof took quite a bit of time, I decided to break the project\cf14 \
+  \cf18 into several phases.\cf14 \
+\
+  \cf18 \uc0\u9474  
+\f1\b \cf21 ## Initial phase
+\f0\b0 \cf14 \
+  \cf18 \uc0\u9474 \cf14 \
+  \cf18 \uc0\u9474  1. Understand the data.\cf14 \
+  \cf18 \uc0\u9474  2. Work through the Java code to utilize the REST APIs\cf14 \
+  \cf18 \uc0\u9474  3. Download the data and relationships to flat files:\cf14 \
+  \cf18 \uc0\u9474 \cf14 \
+  \cf18 \uc0\u9474  \u9474 \cf14 \
+  \cf18 \uc0\u9474  \u9474  \'95 CSV files for 'database tables'\cf14 \
+  \cf18 \uc0\u9474  \u9474  \'95 Flat XML files for the XML content\cf14 \
+\
+  \cf22 --------\cf14 \
+\
+  \cf18 \uc0\u9474  
+\f1\b \cf21 ## Database phase
+\f0\b0 \cf14 \
+  \cf18 \uc0\u9474 \cf14 \
+  \cf18 \uc0\u9474  1. Design the database\cf14 \
+  \cf18 \uc0\u9474  2. Implement the database functionality using JDBC\cf14 \
+\
+  \cf22 --------\cf14 \
+\
+  \cf18 \uc0\u9474  
+\f1\b \cf21 ## User interface phase
+\f0\b0 \cf14 \
+  \cf18 \uc0\u9474 \cf14 \
+  \cf18 \uc0\u9474  \'95 Design a small web site around the database using Oracle APEX.\cf14 \
+\
+  \cf22 --------\cf14 \
+\
+  
+\f1\b \cf16 \cb17  Understanding the data
+\f0\b0 \cf14 \cb3 \
+\
+  \cf18 Using the existing UIs available at ecfr.gov using the 'Browse' menu\cf14 \
+\
+  \cf18 \'95 Titles\cf14 \
+  \cf18 \'95 Agencies\cf14 \
+  \cf18 \'95 Incorporation by reference [not used]\cf14 \
+  \cf18 \'95 Recent updates\cf14 \
+\
+  
+\f1\b \cf16 \cb17  studying and 'playing' with the current REST endpoints
+\f0\b0 \cf14 \cb3 \
+\
+  \cf18 The ecfr.gov has a complete set of \cf19 \cb20  develoer resources \cf18 \cb3  available\cf14 \
+  \cf18 at 
+\f1\b \cf23 https://www.ecfr.gov/developers/documentation/api/v1
+\f0\b0 \cf18  \cf24 \ulw \ulc24 https://www.ecfr.gov/developers/documentation/api/v1\cf14 \ulnone \
+\
+  \cf18 Using the interactive API documentation allowed for a better\cf14 \
+  \cf18 understanding the actual end-points that needed to be coded against\cf14 \
+  \cf18 for this assigment.\cf14 \
+\
+  
+\f1\b \cf16 \cb17  Utilized end-points
+\f0\b0 \cf14 \cb3 \
+\
+  \cf18   \cf25 API_BASE_URL            = "https://www.ecfr.gov/api"\cf14 \
+\
+  
+\f1\b \cf21 ## End\uc0\u8209 points (relative to the base URL)
+\f0\b0 \cf14 \
+\
+  \cf18   \cf25 ENDPOINT_AGENCIES       = "/admin/v1/agencies.json"\cf14 \
+  \cf18   \cf25 ENDPOINT_TITLES         = "/versioner/v1/titles"\cf14 \
+  \cf18   \cf25 ENDPOINT_PARTS          = "/versioner/v1/full"\cf14 \
+  \cf18   \cf25 ENDPOINT_XML_PART       = "/versioner/v1/full"\cf14 \
+  \cf18   \cf25 ENDPOINT_ANCESTRY_PARTS = "/versioner/v1/ancestry"\cf14 \
+\
+  
+\f1\b \cf21 ## A better understanding of the limited scope for the assignment
+\f0\b0 \cf14 \
+\
+  \cf18 \'95 The assignment is focused on analysis of the data using the 'Agency'.\cf14 \
+  \cf18 \'95 Given this, it became clear that only the XML content for a given agency was required.\cf14 \
+  \cf18 \'95 A better understanding the REST endpoint for 'agencies.json' uncovered this crucial data structure.\cf14 \
+\
+  \cf18   \cf26 \{\cf14 \
+  \cf18   \cf25   \cf27 "agencies"\cf26 :\cf25  \cf26 [\cf14 \
+  \cf18   \cf25     \cf26 \{\cf14 \
+  \cf18   \cf25       \cf27 "name"\cf26 :\cf25  \cf28 "Administrative Conference of the United States"\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "short_name"\cf26 :\cf25  \cf28 "ACUS"\cf26 ,\cf14 \
+  \cf18   \cf25       \cf29 \cb19 ...\cf14 \cb3 \
+  \cf18   \cf25       \cf27 "children"\cf26 :\cf25  \cf26 [],\cf14 \
+  \cf18   \cf25       \cf27 "cfr_references"\cf26 :\cf25  \cf26 [\cf14 \
+  \cf18   \cf25         \cf26 \{\cf14 \
+  \cf18   \cf25           \cf27 "title"\cf26 :\cf25  \cf30 1\cf26 ,\cf14 \
+  \cf18   \cf25           \cf27 "chapter"\cf26 :\cf25  \cf28 "III"\cf14 \
+  \cf18   \cf25         \cf26 \}\cf14 \
+  \cf18   \cf25       \cf26 ]\cf14 \
+  \cf18   \cf25     \cf26 \},\cf14 \
+  \cf18   \cf25     \cf26 \{\cf14 \
+  \cf18   \cf25       \cf27 "name"\cf26 :\cf25  \cf28 "Advisory Council on Historic Preservation"\cf26 ,\cf14 \
+  \cf18   \cf25       \cf29 \cb19 ...\cf14 \cb3 \
+  \cf18   \cf25       \cf29 \cb19 ...\cf14 \cb3 \
+  \cf18   \cf25       \cf29 \cb19 ...\cf14 \cb3 \
+  \cf18   \cf25       \cf27 "cfr_references"\cf26 :\cf25  \cf26 [\cf14 \
+  \cf18   \cf25         \cf26 \{\cf14 \
+  \cf18   \cf25           \cf27 "title"\cf26 :\cf25  \cf30 36\cf26 ,\cf14 \
+  \cf18   \cf25           \cf27 "chapter"\cf26 :\cf25  \cf28 "VIII"\cf14 \
+  \cf18   \cf25         \cf26 \}\cf14 \
+  \cf18   \cf25       \cf26 ]\cf14 \
+  \cf18   \cf25     \cf26 \},\cf14 \
+  \cf18   \cf25     \cf26 \{\cf14 \
+  \cf18   \cf25       \cf27 "name"\cf26 :\cf25  \cf28 "President's Commission on White House Fellowships"\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "short_name"\cf26 :\cf25  \cf28 ""\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "slug"\cf26 :\cf25  \cf28 "president's-commission-on-white-house-fellowships"\cf26 ,\cf14 \
+  \cf18   \cf25       \cf29 \cb19 ...\cf14 \cb3 \
+  \cf18   \cf25       \cf27 "children"\cf26 :\cf25  \cf26 [],\cf14 \
+  \cf18   \cf25       \cf27 "cfr_references"\cf26 :\cf25  \cf26 [\cf14 \
+  \cf18   \cf25         \cf26 \{\cf14 \
+  \cf18   \cf25           \cf27 "title"\cf26 :\cf25  \cf30 1\cf26 ,\cf14 \
+  \cf18   \cf25           \cf27 "chapter"\cf26 :\cf25  \cf28 "IV"\cf26 ,\cf14 \
+  \cf18   \cf25           \cf27 "part"\cf26 :\cf25  \cf28 "425"\cf14 \
+  \cf18   \cf25         \cf26 \}\cf14 \
+  \cf18   \cf25       \cf26 ]\cf14 \
+  \cf18   \cf25     \cf26 \}\cf14 \
+  \cf18   \cf25   \cf26 ]\cf14 \
+  \cf18   \cf26 \}\cf14 \
+\
+  \cf18 \'95 It became clear the the \cf19 \cb20  cfr_references \cf18 \cb3  was crucial.\cf14 \
+\
+  \cf18   \cf25       \cf28 "cfr_references"\cf29 \cb19 :\cf25 \cb3  \cf26 [\cf14 \
+  \cf18   \cf25         \cf26 \{\cf14 \
+  \cf18   \cf25           \cf27 "title"\cf26 :\cf25  \cf30 1\cf26 ,\cf14 \
+  \cf18   \cf25           \cf27 "chapter"\cf26 :\cf25  \cf28 "IV"\cf26 ,\cf14 \
+  \cf18   \cf25           \cf27 "part"\cf26 :\cf25  \cf28 "425"\cf14 \
+  \cf18   \cf25         \cf26 \}\cf14 \
+  \cf18   \cf25       \cf26 ]\cf14 \
+\
+  \cf18 \'95 However, the concept of "chapter" seemed a bit foreign, since the eCFR talks mostly about sections and parts.\cf14 \
+  \cf18 \'95 I then located a key end-point to help with the chapter references:\cf14 \
+\
+  \cf18   \cf26 \{\cf14 \
+  \cf18   \cf25   \cf27 "ancestors"\cf26 :\cf25  \cf26 [\cf14 \
+  \cf18   \cf25     \cf26 \{\cf14 \
+  \cf18   \cf25       \cf27 "identifier"\cf26 :\cf25  \cf28 "1"\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "label"\cf26 :\cf25  \cf28 "Title 1 - General Provisions"\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "label_level"\cf26 :\cf25  \cf28 "Title 1"\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "label_description"\cf26 :\cf25  \cf28 "General Provisions"\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "reserved"\cf26 :\cf25  \cf21 false\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "type"\cf26 :\cf25  \cf28 "title"\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "size"\cf26 :\cf25  \cf30 330548\cf14 \
+  \cf18   \cf25     \cf26 \},\cf14 \
+  \cf18   \cf25     \cf26 \{\cf14 \
+  \cf18   \cf25       \cf27 "identifier"\cf26 :\cf25  \cf28 "I"\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "label"\cf26 :\cf25  \cf28 " Chapter I - Administrative Committee of the Federal Register"\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "label_level"\cf26 :\cf25  \cf28 " Chapter I"\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "label_description"\cf26 :\cf25  \cf28 "Administrative Committee of the Federal Register"\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "reserved"\cf26 :\cf25  \cf21 false\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "type"\cf26 :\cf25  \cf28 "chapter"\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "size"\cf26 :\cf25  \cf30 110792\cf26 ,\cf14 \
+  \cf18   \cf25       \cf27 "descendant_range"\cf26 :\cf25  \cf28 "1 \'96 49"\cf14 \
+  \cf18   \cf25     \cf26 \}\cf14 \
+  \cf18   \cf25   \cf26 ]\cf14 \
+  \cf18   \cf26 \}\cf14 \
+\
+  \cf18 I was able to use this end-point to validate chapter references.\cf14 \
+\
+  \cf18 It then became a somewhat easy matter to download the XML for just the relevent chapter:\cf14 \
+\
+  \cf18   \cf25 String url \cf31 =\cf25  API_BASE_URL\cf14 \
+  \cf18   \cf25              \cf31 +\cf25  ENDPOINT_XML_PART\cf14 \
+  \cf18   \cf25              \cf31 +\cf25  String\cf26 .\cf32 format\cf26 (\cf28 "/%s/title-%s.xml?chapter=%s"\cf26 ,\cf25  date\cf26 ,\cf25  titleDetails\cf26 .\cf32 getNumber\cf26 (),\cf25  chapterDescriptor\cf26 .\cf14 \
+  \cf32 getChapterName\cf26 ());\cf14 \
+\
+  
+\f1\b \cf16 \cb17  Database design
+\f0\b0 \cf14 \cb3 \
+\
+  \cf18 Now that the basic Java data structures are in place, mapping this to an\cf14 \
+  \cf18 Entity Relationship diagram and database tables becomes much easier.\cf14 \
+\
+  
+\f1\b \cf21 ## Entities
+\f0\b0 \cf14 \
+\
+  \cf18 \'95 title\cf14 \
+  \cf18 \'95 chapter\cf14 \
+  \cf18 \'95 agency\cf14 \
+\
+  
+\f1\b \cf21 ## Relationships
+\f0\b0 \cf14 \
+\
+  \cf18 \'95 An agency has zero or more chapters.\cf14 \
+  \cf18 \'95 A chapter is part of a single title.\cf14 \
+  \cf18 \'95 A title can contain multiple chapters.\cf14 \
+  \cf18 \'95 A chapter contains a large XML document\cf14 \
+\
+  \cf22 --------\cf14 \
+\
+  \cf18 \uc0\u9474  
+\f1\b \cf21 ### 
+\f2\i OUT OF SCOPE
+\f0\i0\b0 \cf14 \
+  \cf18 \uc0\u9474 \cf14 \
+  \cf18 \uc0\u9474  
+\f1\b \cf21 #### 
+\f2\i Entities
+\f0\i0\b0 \cf14 \
+  \cf18 \uc0\u9474 \cf14 \
+  \cf18 \uc0\u9474  \'95 part\cf14 \
+  \cf18 \uc0\u9474  \'95 section\cf14 \
+  \cf18 \uc0\u9474 \cf14 \
+  \cf18 \uc0\u9474  
+\f1\b \cf21 #### 
+\f2\i Relationships
+\f0\i0\b0 \cf14 \
+  \cf18 \uc0\u9474 \cf14 \
+  \cf18 \uc0\u9474  \'95 A part has multiple sections\cf14 \
+  \cf18 \uc0\u9474  \'95 The relationship between chapters and sections is based on a complex set of hiearchy relationships that\cf14 \
+  \cf18 \uc0\u9474  \'95 can only be determined fully by parsing the XML blob directly.\cf14 \
+\
+  \cf22 --------\cf14 \
+\
+  \cf18   \cf25 +------------------------------+  1                     +---------------------------+\cf14 \
+  \cf18   \cf25 |   Title                      |<---------------------->|   Chapter                 |\cf14 \
+  \cf18   \cf25 |------------------------------|                   0..* |---------------------------|\cf14 \
+  \cf18   \cf25 | title_guid GUID (PK)         |                        | chapter_guid GUID (PK)    |\cf14 \
+  \cf18   \cf25 | title_number VARCHAR(80)     |                     /->| chapter_name VARCHAR(200) |\cf14 \
+  \cf18   \cf25 | title_name VARCHAR(200)      |               0..*/    | title_guid GUID (FK)      |\cf14 \
+  \cf18   \cf25 | latest_amended_on DATE       |                  /     | agency_guid GUID (FK)     |\cf14 \
+  \cf18   \cf25 | latest_issue_date DATE       |                /       | chapter_content BLOB      |\cf14 \
+  \cf18   \cf25 | up_to_date_as_of DATE        |              /         +---------------------------+\cf14 \
+  \cf18   \cf25 | reserved BOOLEAN             |             /                    | 1..*\cf14 \
+  \cf18   \cf25 +------------------------------+\\          /                      |\cf14 \
+  \cf18   \cf25                                  \\       /                        |\cf14 \
+  \cf18   \cf25                                   \\    /                          |\cf14 \
+  \cf18   \cf25                                    \\ /                            |\cf14 \
+  \cf18   \cf25                                    /\\                             |\cf14 \
+  \cf18   \cf25   +----------------------------+ /1  \\                            |\cf14 \
+  \cf18   \cf25   |      agency                |      \\                           |\cf14 \
+  \cf18   \cf25   |----------------------------+       \\                          |\cf14 \
+  \cf18   \cf25   | agency_guid GUID (PK)      |        \\                         |\cf14 \
+  \cf18   \cf25   | name VARCHAR(200)          |         \\                        |\cf14 \
+  \cf18   \cf25   | short_name VARCHAR(200)    |          \\                       |\cf14 \
+  \cf18   \cf25   | display_name VARCHAR(200)  |           \\                      |\cf14 \
+  \cf18   \cf25   | sortable_name VARCHAR(200) |            \\                     |\cf14 \
+  \cf18   \cf25   | slug VARCHAR(200)          |             \\                    |\cf14 \
+  \cf18   \cf25   | section_name VARCHAR(200)  |              |                   |\cf14 \
+  \cf18   \cf25   +----------------------------+              |                   |\cf14 \
+  \cf18   \cf25                                               |                   |\cf14 \
+  \cf18   \cf25   +===============================================================+\cf14 \
+  \cf18   \cf25   |                  DATA AVAILABLE FOR FUTURE CAPABILITIES       |\cf14 \
+  \cf18   \cf25   +===============================================================+\cf14 \
+  \cf18   \cf25                                               |                 /\cf14 \
+  \cf18   \cf25                                               |               /\cf14 \
+  \cf18   \cf25                                               | 0..*         / 1\cf14 \
+  \cf18   \cf25                                               v             v\cf14 \
+  \cf18   \cf25                                        +-------------------------+\cf14 \
+  \cf18   \cf25                                        |   part                  |\cf14 \
+  \cf18   \cf25 +------------------------+             +-------------------------+\cf14 \
+  \cf18   \cf25 | section                |             | part_guid GUID (PK)     |\cf14 \
+  \cf18   \cf25 +------------------------+ 1..*      1 | title_guid GUID (FK)    |\cf14 \
+  \cf18   \cf25 | section_guid GUID (PK) |<----------->| agency_guid GUID (FK)   |\cf14 \
+  \cf18   \cf25 | type VARCHAR(32)       |             | part_number VARCHAR(32) |\cf14 \
+  \cf18   \cf25 | number VARCHAR(32)     |             | identifier VARCHAR(200) |\cf14 \
+  \cf18   \cf25 | identifier VARCHAR(32) |             | amended_date DATE       |\cf14 \
+  \cf18   \cf25 | name VARCHAR(2000)     |             | issue_date DATE         |\cf14 \
+  \cf18   \cf25 | amended_date DATE      |             | substantive BOOLEAN     |\cf14 \
+  \cf18   \cf25 | issued_date DATE       |             | remove BOOLEAN          |\cf14 \
+  \cf18   \cf25 | substantive BOOLEAN    |             | subpart BOOLEAN         |\cf14 \
+  \cf18   \cf25 | removed BOOLEAN        |             +-------------------------+\cf14 \
+  \cf18   \cf25 | sub_part boolean       |\cf14 \
+  \cf18   \cf25 +------------------------+\cf14 \
+}
