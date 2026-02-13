@@ -85,7 +85,7 @@ select * from cfr_agency;
 select * from cfr_chapter;
 
 -- relevent join
-select c.chapter_name, a.name, t.title_number
+select c.chapter_name, a.name, t.title_number, c.chapter_content
 from cfr_chapter c, cfr_agency a, cfr_title t
 where c.fk_agency_guid = a.agency_guid
 and c.fk_title_guid = t.title_guid;
@@ -99,3 +99,4 @@ delete from cfr_agency;
 drop table cfr_title;
 drop table cfr_chapter;
 drop table cfr_agency;
+commit;
