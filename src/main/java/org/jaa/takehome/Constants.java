@@ -16,11 +16,14 @@ public class Constants {
 
     /** End‑point to fetch parts for a given title. */
     public static final String ENDPOINT_PARTS = API_BASE_URL +  "/versioner/v1/full";
+    public static final String ENDPOINT_XML_PART =  "/versioner/v1/full";
+
+    public static final String ENDPOINT_ANCESTRY_PARTS = API_BASE_URL +  "/versioner/v1/ancestry";
 
     /** End‑point to fetch the **full XML** for a single part. */
     public static final String ENDPOINT_PART_DOCUMENT = "title-{title}.json";
 
-
+    public static Path currentWorkingDirectoryPath;
     /** Milliseconds to pause between successive calls (50 ms = 20 req/s). */
     public static final long REQUEST_DELAY_MS = 50L;
 

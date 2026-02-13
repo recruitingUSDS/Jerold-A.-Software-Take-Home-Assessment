@@ -7,6 +7,7 @@ import org.jaa.takehome.downloader.AgencyDownloader;
 import org.jaa.takehome.downloader.TitleDownloader;
 import org.jaa.takehome.downloader.VersionerDownloader;
 
+import java.nio.file.Paths;
 import java.util.List;
 
 public class Main {
@@ -14,9 +15,12 @@ public class Main {
     /*                     ENTRY POINT (main)                               */
     /* --------------------------------------------------------------------- */
     public static void main(String[] args) {
+
+        Constants.currentWorkingDirectoryPath = Paths.get("").toAbsolutePath();
+        System.out.println("Current working directory: "+Constants.currentWorkingDirectoryPath.toAbsolutePath().normalize());
         final TitleDownloader titleDownloader;
         final VersionerDownloader versionerDownloader;
-        final AgencyDownloader AgencyDownloader;
+        final AgencyDownloader agencyDownloader;
         final List<AgencyDescriptor> allAgencies;
         try
         {
@@ -33,11 +37,12 @@ public class Main {
                 if (partDescriptors != null) {
                     title.setParts(partDescriptors);
                 }
+                versionerDownloader.crossReferenceAllPartsForTitle(title);
 
             }
             System.out.println("--------------------------------------------------------------------------------");
             /* get All agencies and store in fs/db */
-            AgencyDownloader agencyDownloader = new AgencyDownloader(allTitles);
+            agencyDownloader = new AgencyDownloader(allTitles);
             allAgencies = agencyDownloader.getAllAgencyDetailsFromEndpoint();
             agencyDownloader.getAllPartsForAllAgenciesAndSaveXml(allAgencies);
 

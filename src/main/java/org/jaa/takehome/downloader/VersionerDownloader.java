@@ -49,26 +49,32 @@ public class VersionerDownloader {
 
     /* --------------------------------------------------------------- */
     /** Download every part that belongs to the supplied title. */
-    public void downloadTitle(TitleDescriptor title) throws IOException, InterruptedException {
+    public void crossReferenceAllPartsForTitle(TitleDescriptor title) throws IOException, InterruptedException {
         String titleNum = title.number;
         File output = OUTPUT_ROOT.toFile();
-        File partDetailsDirectory = new File(output, "title-" + title.number);
-        partDetailsDirectory.mkdirs();
-        Path titleDir = OUTPUT_ROOT.resolve("title-" + String.format("%02d", Integer.parseInt(titleNum)));
+        Path partDetailsPath = Paths.get(OUTPUT_ROOT.toString(), "AllTitles");
+        Path titleDir = Paths.get(partDetailsPath.toString(), String.format("title-%02d", Integer.parseInt(titleNum)));
         Files.createDirectories(titleDir);
+        Path labelPath = Paths.get(titleDir.toString(), Utils.slugify(title.getName()) + ".txt");
+        if (Files.exists(labelPath)) {
+            Files.delete(labelPath);
+        }
+        Files.createFile(labelPath);
+
 
         // 2️⃣ List parts for this title
         List<PartDescriptor> parts = title.getParts();
-        File csvFile = new File(titleDir.toFile(), "Parts.csv");
+        File csvFile = new File(titleDir.toFile(), "parts.csv");
         if (csvFile.exists()) csvFile.delete();
+        Path csvPath = csvFile.toPath().toAbsolutePath().normalize();
+        Path relativePartPath = currentWorkingDirectoryPath.relativize(csvPath);
         csvFile.createNewFile();
-        System.out.printf("Writing %d parts to %s: ", parts.size(), titleDir);
         try (PrintStream outputFileStream = new PrintStream(csvFile)) {
             for (PartDescriptor part : parts) {
                 outputFileStream.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n",
                                         part.getType(),
                                         part.getPartNumber(),
-                                        part.getTitle(),
+                                        part.getTitleName(),
                                         part.getIdentifier(),
                                         part.getName(),
                                         part.getAmendedDate(),
@@ -77,13 +83,13 @@ public class VersionerDownloader {
                                         part.isRemoved(),
                                         part.isSubPart());
             }
-            System.out.println("Done.");
+            System.out.printf("\tWrote %,7d parts to .../%s\n", parts.size(), relativePartPath);
         }
     }
 
 
 
-    /** GET /titles/{title}/parts → list of parts for that title (JSON array). */
+    /** GET List of parts for supplied title */
     public List<PartDescriptor> fetchPartsForTitle(TitleDescriptor titleDescriptor) throws IOException, InterruptedException {
         String titleNumber = titleDescriptor.getNumber();
         List<PartDescriptor> parts = new ArrayList<>();
@@ -105,14 +111,14 @@ public class VersionerDownloader {
             System.out.println("\nRate‑limit hit – sleeping " + waitSec + " s\n");
             TimeUnit.SECONDS.sleep(waitSec);
             // retry once
-            return fetchPartsForTitle(titleDescriptor);
+            parts.addAll(fetchPartsForTitle(titleDescriptor));
         }
-        if (resp.statusCode() == 503) {
+        if (resp.statusCode() != 200) {
             Utils.reportError(request, resp, "Failed to list parts for title number " + titleDescriptor.getNumber() + " '" + titleDescriptor.getName() + "'");
             return null;
         }
         Utils.ensureSuccess(request, resp, "Failed to list parts for title number " + titleDescriptor.getNumber() + " '" + titleDescriptor.getName() + "'\n");
-        System.out.printf("Fetching all parts for title number %s '%s': ", titleDescriptor.getNumber(), titleDescriptor.getName());
+        System.out.printf("Fetching all parts for title number %2.2s: %s: ", titleDescriptor.getNumber(), titleDescriptor.getName());
         System.out.flush();
         JsonNode root = mapper.readTree(resp.body());
         JsonNode versions = root.path("content_versions");
@@ -122,7 +128,8 @@ public class VersionerDownloader {
             count++;
             colMarker++;
             if (colMarker % 80 == 0) {
-                System.out.printf("\015\033[KFetching all parts for title number %s '%s' (%,d): ", titleDescriptor.getNumber(),titleDescriptor.getName(), count);
+                System.out.printf("\015\033[KFetched \033[32m%,7d\033[0m parts so far for title number %2.2s: \33[33m%41.41s\033[0m: ",
+                                  count, titleDescriptor.getNumber(),titleDescriptor.getName());
                 colMarker = 0;
             } else {
                 System.out.print(".");
@@ -131,6 +138,10 @@ public class VersionerDownloader {
             String type = node.path("type").asText();
             String partNumber = node.path("part").asText();
             String title = node.path("title").asText();
+            if (!title.trim().equalsIgnoreCase(titleDescriptor.getNumber())) {
+                System.out.printf("Unexpected title cross reference, expecting '%s', but found '%s'\n",
+                                  titleDescriptor.getNumber(), title);
+            }
             String identifier = node.path("identifier").asText();
             String name = node.path("name").asText();
             String amended = node.path("amendment_date").asText();
@@ -144,7 +155,7 @@ public class VersionerDownloader {
                                                                substantive, removed, subPart, null);
             parts.add(partDescriptor);
         }
-        System.out.printf("\015\033[KFetched %,d parts for title number %s '%s'\n", count, titleDescriptor.getNumber(), titleDescriptor.getName());
+        System.out.printf("\015\033[KFetched \033[32m%,7d\033[0m total parts for title number %2.2s: \033[33m%41.41s\033[0m: ", count, titleDescriptor.getNumber(), titleDescriptor.getName());
         return parts;
     }
 

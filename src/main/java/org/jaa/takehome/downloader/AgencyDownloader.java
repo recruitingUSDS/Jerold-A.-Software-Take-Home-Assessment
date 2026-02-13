@@ -3,14 +3,16 @@ package org.jaa.takehome.downloader;
 
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import org.jaa.takehome.descriptor.AgencyDescriptor;
+import org.jaa.takehome.descriptor.ChapterDescriptor;
 import org.jaa.takehome.descriptor.PartDescriptor;
 import org.jaa.takehome.descriptor.TitleDescriptor;
 import org.jaa.takehome.utilities.Utils;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.http.*;
@@ -18,7 +20,6 @@ import java.nio.file.*;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static org.jaa.takehome.Constants.*;
 
@@ -39,15 +40,6 @@ import static org.jaa.takehome.Constants.*;
 public class AgencyDownloader {
 
     /* --------------------------------------------------------------- */
-    /*                     ★★  CONFIGURATION  ★★                      */
-    /* --------------------------------------------------------------- */
-    /** Base URL for the live Versioner API. */
-
-    /** Where the XML files will be written (under a sub‑folder named after the agency). */
-    private static final Path OUTPUT_ROOT = Paths.get("output");
-
-
-    /* --------------------------------------------------------------- */
     private final HttpClient httpClient;
     private final ObjectMapper jsonMapper;
     private final List<TitleDescriptor> titleDescriptorList;
@@ -65,7 +57,10 @@ public class AgencyDownloader {
 
 
     /* --------------------------------------------------------------- */
-    /** Main orchestration method. */
+
+    /**
+     * Main orchestration method.
+     */
     public void getAllPartsForAllAgenciesAndSaveXml(List<AgencyDescriptor> allAgencies) throws IOException, InterruptedException {
 
         // 1️⃣  Verify that the agency exists (optional but nice for early failure)
@@ -74,50 +69,67 @@ public class AgencyDownloader {
         }
 
         for (AgencyDescriptor agency : allAgencies) {
-            // 0️⃣  Create the top‑level output folder for the agency
-            String agencySlug = slugify(agency.getName());
-            Path agencyRoot = OUTPUT_ROOT.resolve(agencySlug);
-            Files.createDirectories(agencyRoot);
-
-            // 3️⃣  For each title, download all parts that belong to the same agency
+            // 3️⃣  For each Agency, download all parts that belong to the same agency
             for (TitleDescriptor title : titleDescriptorList) {
-                downloadTitle(title, agencyRoot, agency);
+                downloadTitlePartsForAgency(title, agency);
             }
         }
     }
 
     /* --------------------------------------------------------------- */
-    /** Download every part for a given title (already known to belong to the target agency). */
-    private void downloadTitle(TitleDescriptor titleDetails,
-                               Path agencyRoot,
-                               AgencyDescriptor agency)
-            throws IOException, InterruptedException {
 
-        String titleNum = titleDetails.number;
+    /**
+     * Download every part for a given title (already known to belong to the target agency).
+     */
+    private void downloadTitlePartsForAgency(TitleDescriptor titleDetails,
+                                             AgencyDescriptor agency)
+            throws IOException, InterruptedException {
+        Path agencyRoot = agency.getAgencyOutputPath();
+        String titleNum = titleDetails.getNumber();
         Path titleDir = agencyRoot.resolve("Title-" + String.format("%02d", Integer.parseInt(titleNum)));
         Files.createDirectories(titleDir);
 
         // 2️⃣  List parts for this title – we also pass the agency filter just in case a title mixes agencies.
-        List<PartDescriptor> parts = titleDetails.getParts();
-        System.out.printf("Title number %s '%s' → Total of %d part(s)\n",
-                          titleDetails.number, titleDetails.getName(), parts.size());
-
         int count = 1;
-        for (PartDescriptor part : parts) {
-            System.out.printf("\015\033[K\t[%3d/%d] Part Number %s: Name '%s' – Title Name '%s'",
-                              count, parts.size(), part.getPartNumber(), part.getName(), part.getTitle());
+
+        System.out.printf("Agency → \"\033[32m%s\033[0m\" → For (Title \033[34m%s\033[0m; \033[36m%s\033[0m) → Total of [\033[35m%,7d\33[0m] Expected Chapters(s)",
+                          agency.getName(), titleDetails.getNumber(), titleDetails.getName(), agency.getChapters().size());
+
+        for (ChapterDescriptor chapter : agency.getChapters()) {
             System.out.flush();
             count++;
-            String xml = fetchPartXml(titleDetails, part);
-            savePartXml(titleDir, part.getPartNumber(), xml);
-            Thread.sleep(REQUEST_DELAY_MS);
+            Exception passException = null;
+            boolean ok = false;
+            for (int backoff = 1; backoff < 5 && !ok; backoff++) {
+                try {
+                    String xml = fetchPartXml(titleDetails, chapter);
+                    if (xml != null) {
+                        double kb = xml.length() / 1024.0;
+                        System.out.printf("\015\033[KDownload size \033[35m%.2f KB\033[0m for Agency → \"\033[32m%s\033[0m\" → For (Title \033[34m%s\033[0m; \033[36m%s\033[0m) → Chapter Number \033[32m%s\033[0m: ",
+                                          kb, agency.getName(), titleDetails.getNumber(), titleDetails.getName(), chapter.getChapterName());
+                        savePartXml(titleDir, chapter.getChapterName(), xml);
+                    }
+                    ok = true;
+                } catch (IOException ie) {
+                    passException = ie;
+                    long backoffDelay = REQUEST_DELAY_MS * backoff;
+                    System.out.printf("\nError downloading XML: \033[31m%s\033[0m. Backoff delay of %d Milliseconds\n",
+                                      ie.getMessage(),
+                                      backoffDelay);
+                    Thread.sleep(backoffDelay);
+                }
+            }
+            if (!ok && passException != null) throw new IOException(passException.getMessage());
         }
     }
+
 
     /* --------------------------------------------------------------- */
     /** GET /agencies → simple list of agency names (String). */
     public List<AgencyDescriptor> getAllAgencyDetailsFromEndpoint()
             throws IOException, InterruptedException {
+        System.out.println("Getting all Agency Details");
+        ChapterLocator chapterLocator = new ChapterLocator();
         List<AgencyDescriptor> allAgencies = new ArrayList<>();
         String url = API_BASE_URL + ENDPOINT_AGENCIES;
         HttpRequest request = buildRequest(url, "application/json");
@@ -130,27 +142,30 @@ public class AgencyDownloader {
         JsonNode root = jsonMapper.readTree(resp.body());
         JsonNode agencies = root.path("agencies");
         for (JsonNode node : agencies) {
-
             String name = node.path("name").asText();
             String shortName = node.path("short_name").asText();
             String displayName = node.path("display_name").asText();
             String sortableName = node.path("sortable_name").asText();
             String slug = node.path("slug").asText();
-            AgencyDescriptor agencyDescriptor = new AgencyDescriptor(name, shortName, displayName, sortableName, slug);
-
+            String agencySlug = Utils.slugify(name);
+            Path agencyRoot = Paths.get(OUTPUT_ROOT.toString(), "Agencies", agencySlug);
+            Files.createDirectories(agencyRoot);
+            AgencyDescriptor agencyDescriptor = new AgencyDescriptor(name, shortName, displayName, sortableName, slug, agencyRoot);
             JsonNode cfrRefs = node.path("cfr_references");
+            List<PartDescriptor> agencyParts = new ArrayList<>();
             if (cfrRefs != null && cfrRefs.isArray()) {
                 for (JsonNode cfrRef : cfrRefs) {
                     String titleNumber = cfrRef.path("title").asText();
                     String chapterName = cfrRef.path("chapter").asText();
-                    for (TitleDescriptor titleDescriptor : titleDescriptorList) {
-                        if (titleDescriptor.number.equals(titleNumber)) {
-                            agencyDescriptor.setTitleDescriptor(titleDescriptor);
-                            List<PartDescriptor> parts = titleDescriptor.getParts();
-                            for (PartDescriptor part : parts) {
-                                if (part.getType().equalsIgnoreCase("chapter")) {
-
+                    if (chapterName != null && !chapterName.isEmpty()) {
+                        for (TitleDescriptor titleDescriptor : titleDescriptorList) {
+                            if (titleDescriptor.getNumber().trim().equalsIgnoreCase(titleNumber)) {
+                                ChapterDescriptor chapterDescriptor = chapterLocator.findChapter(titleDescriptor, agencyDescriptor, chapterName);
+                                if (chapterDescriptor != null) {
+                                    agencyDescriptor.addTitleDescriptor(titleDescriptor);
+                                    agencyDescriptor.addAgencyChapter(chapterDescriptor);
                                 }
+                                break;
                             }
                         }
                     }
@@ -158,20 +173,45 @@ public class AgencyDownloader {
             }
             allAgencies.add(agencyDescriptor);
         }
+        saveAgencyList(allAgencies);
         return allAgencies;
+    }
+
+
+    private void saveAgencyList(List<AgencyDescriptor> agencyDescriptorList) throws IOException {
+        Path agencyRoot = Paths.get(OUTPUT_ROOT.toString(), "Agencies");
+        Path agencyCSVPath = Paths.get(agencyRoot.toString(), "agency.csv");
+        File csvFile = agencyCSVPath.toFile();
+        if (csvFile.exists()) csvFile.delete();
+        csvFile.createNewFile();
+        Path csvPath = csvFile.toPath().toAbsolutePath().normalize();
+        Path relativePartPath = currentWorkingDirectoryPath.relativize(csvPath);
+        try (PrintStream outputFileStream = new PrintStream(csvFile)) {
+            for (AgencyDescriptor agency : agencyDescriptorList) {
+                outputFileStream.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n",
+                                        agency.getName(),
+                                        agency.getShortName(),
+                                        agency.getDisplayName(),
+                                        agency.getSortableName(),
+                                        agency.getSlug(),
+                                        agency.getSectionName(),
+                                        (agency.getTitleCount() + " Titles"),
+                                        (agency.getChapterCount() + " Chapters"));
+
+            }
+        }
     }
 
 
 
     /** GET /titles/{title}/parts/{part} → raw XML for a single part. */
-    private String fetchPartXml(TitleDescriptor titleDetails, PartDescriptor partDescriptor)
+    private String fetchPartXml(TitleDescriptor titleDetails, ChapterDescriptor chapterDescriptor)
             throws IOException, InterruptedException {
+        String date = titleDetails.getLatestAmendedOn();
         // https://www.ecfr.gov/api/versioner/v1/full/2022-12-29/title-2.xml"
-        String url = String.format("%s/%s/title-%s.xml?part=%s",
-                                       ENDPOINT_PARTS,
-                                       partDescriptor.getAmendedDate(),
-                                       titleDetails.number,
-                                       partDescriptor.getPartNumber());
+        String url = API_BASE_URL
+                + ENDPOINT_XML_PART
+                + String.format("/%s/title-%s.xml?chapter=%s", date, titleDetails.getNumber(), chapterDescriptor.getChapterName());
         HttpRequest request = buildRequest(url, "application/xml");
         HttpResponse<String> resp = httpClient.send(request,
                                                     HttpResponse.BodyHandlers.ofString());
@@ -185,12 +225,18 @@ public class AgencyDownloader {
             System.out.println("Rate‑limit hit – sleeping " + waitSec + " s");
             TimeUnit.SECONDS.sleep(waitSec);
             // retry once
-            return fetchPartXml(titleDetails, partDescriptor);
+            return fetchPartXml(titleDetails, chapterDescriptor);
+        }
+        if (status == 404) {
+            System.out.printf("\015\033[KXML not found: Title [\033[31m%s\033[0m] Chapter %s\n",
+                              titleDetails.getNumber(),
+                              chapterDescriptor.getChapterName());
+            return null;
         }
         Utils.ensureSuccess(request, resp, "Failed to fetch part: "
                 + titleDetails.number
-                + ": Part Number :"
-                + partDescriptor.getPartNumber()
+                + ": Chapter Number :"
+                + chapterDescriptor.getChapterName()
                 + ":");
         return resp.body();   // raw XML
     }
@@ -203,12 +249,21 @@ public class AgencyDownloader {
                 .header("Accept", acceptHeader)
                 .GET();
         return builder.build();
+        /*
+            private HttpRequest buildRequest(String url, String acceptHeader) {
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Accept", acceptHeader)
+                .GET();
+         */
     }
 
     /** Write the XML payload to a file named “part‑<number>.xml”. */
-    private void savePartXml(Path titleDir, String partNumber, String xml) {
-        String safePart = partNumber.replaceAll("[^0-9A-Za-z]", "_");
-        Path outFile = titleDir.resolve("part-" + safePart + ".xml");
+    private void savePartXml(Path titleDir, String chapterNumber, String xml) {
+        String safeChapter = chapterNumber.replaceAll("[^0-9A-Za-z]", "_");
+        Path outFile = titleDir.resolve("chapter-" + safeChapter + ".xml");
+        Path outPath = outFile.toAbsolutePath().normalize();
+        Path relativePartPath = currentWorkingDirectoryPath.relativize(outPath);
         try {
             Files.writeString(outFile, xml,
                               StandardOpenOption.CREATE,
@@ -216,20 +271,13 @@ public class AgencyDownloader {
         } catch (IOException e) {
             throw new UncheckedIOException("Unable to write " + outFile, e);
         }
+        System.out.printf("Saved to file .../%s\n", relativePartPath);
     }
 
     /* --------------------------------------------------------------- */
     /** Very small utility: URL‑encode a query‑parameter value. */
     private static String encode(String s) {
         return java.net.URLEncoder.encode(s, java.nio.charset.StandardCharsets.UTF_8);
-    }
-
-    /** Turn a free‑form string into a safe directory name (e.g. “Environmental Protection Agency” → “environmental‑protection‑agency”). */
-    private static String slugify(String s) {
-        return s.trim()
-                .toLowerCase(Locale.ROOT)
-                .replaceAll("[^a-z0-9]+", "-")
-                .replaceAll("^-|-$", "");
     }
 
 

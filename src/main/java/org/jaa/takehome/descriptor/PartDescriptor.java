@@ -63,7 +63,8 @@ public class PartDescriptor {
     public String getPartNumber() { return partNumber; }
     public void setPartNumber(String partNumber) { this.partNumber = partNumber; }
 
-    public String getTitle() { return titleDescriptor.getName(); }
+    public String getTitleNumber() { return titleDescriptor.getNumber(); }
+    public String getTitleName() { return titleDescriptor.getName(); }
     public void setTitleDescriptor(TitleDescriptor titleDescriptor) { this.titleDescriptor = titleDescriptor; }
 
     public String getAgency() { return agency; }

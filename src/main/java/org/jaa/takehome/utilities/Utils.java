@@ -7,12 +7,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Locale;
 
 public class Utils {
 
     private static final ObjectMapper mapper = new ObjectMapper();
     public static void reportError(HttpRequest request, HttpResponse<String> resp, String message)  throws IOException {
-        System.out.println(message + ": " + "Response Code: " + resp.statusCode()  + "\n" + request.toString() + "\n\t=> " + request);
+        System.out.println("\033[31m" + message + "\033[0m" + ": " + "Response Code: " + resp.statusCode()  + "\n" + request.toString() + "\n\t=> " + request);
         try {
             JsonNode root = mapper.readTree(resp.body());
             System.out.println(root.toPrettyString());
@@ -26,4 +27,14 @@ public class Utils {
             throw new IOException(message + ": " + request.toString() + ": " + resp.statusCode() + " => " + request.method() + " " + request.uri());
         }
     }
+
+    /** Turn a free‑form string into a safe directory name (e.g. “Environmental Protection Agency” → “environmental‑protection‑agency”). */
+    public static String slugify(String s) {
+        return s.trim()
+                .toLowerCase(Locale.ROOT)
+                .replaceAll("[^a-z0-9]+", "-")
+                .replaceAll("^-|-$", "");
+    }
+
+
 }
